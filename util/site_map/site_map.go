@@ -7,29 +7,40 @@ import (
 	"time"
 
 	useragent "github.com/gildemberg-santos/webcrawlerurl_v2/util/user_agent"
+	"golang.org/x/net/html/charset"
 )
 
+type Link struct {
+	Rel      string `xml:"rel,attr"`
+	Hreflang string `xml:"hreflang,attr"`
+	Href     string `xml:"href,attr"`
+}
+
+type URLs struct {
+	Loc      string  `xml:"loc"`
+	Lastmod  string  `xml:"lastmod"`
+	Priority float32 `xml:"priority"`
+	Link     []Link  `xml:"link"`
+}
+
+type Urlset struct {
+	XMLName xml.Name `xml:"urlset"`
+	URLs    []URLs   `xml:"url"`
+}
+
+type SitemapItem struct {
+	Loc     string `xml:"loc"`
+	Lastmod string `xml:"lastmod"`
+}
+
+type Sitemapindex struct {
+	Sitemap []SitemapItem `xml:"sitemap"`
+}
+
 type SiteMap struct {
-	UrlLocation string
-	Urlset      struct {
-		XMLName xml.Name `xml:"urlset"`
-		URLs    []struct {
-			Loc      string  `xml:"loc"`
-			Lastmod  string  `xml:"lastmod"`
-			Priority float32 `xml:"priority"`
-			Link     []struct {
-				Rel      string `xml:"rel,attr"`
-				Hreflang string `xml:"hreflang,attr"`
-				Href     string `xml:"href,attr"`
-			} `xml:"link"`
-		} `xml:"url"`
-	}
-	Sitemapindex struct {
-		Sitemap []struct {
-			Loc     string `xml:"loc"`
-			Lastmod string `xml:"lastmod"`
-		} `xml:"sitemap"`
-	} `xml:"sitemapindex"`
+	UrlLocation  string
+	Urlset       Urlset       `xml:"urlset"`
+	Sitemapindex Sitemapindex `xml:"sitemapindex"`
 }
 
 func NewSiteMap(url string) *SiteMap {
@@ -65,13 +76,38 @@ func (s *SiteMap) load() error {
 		return err
 	}
 
-	body, err := io.ReadAll(resp.Body)
-	if err != nil {
-		return err
-	}
+	decoder := xml.NewDecoder(resp.Body)
+	decoder.CharsetReader = charset.NewReaderLabel
 
-	xml.Unmarshal(body, &s.Sitemapindex)
-	xml.Unmarshal(body, &s.Urlset)
+	for {
+		t, err := decoder.Token()
+		if err == io.EOF {
+			break
+		}
+		if err != nil {
+			return err
+		}
+
+		switch se := t.(type) {
+		case xml.StartElement:
+			if se.Name.Local == "urlset" {
+				var urlset Urlset
+				if err := decoder.DecodeElement(&urlset, &se); err != nil {
+					return err
+				}
+
+				s.Urlset = urlset
+			}
+			if se.Name.Local == "sitemapindex" {
+				var sitemapindex Sitemapindex
+				if err := decoder.DecodeElement(&sitemapindex, &se); err != nil {
+					return err
+				}
+
+				s.Sitemapindex = sitemapindex
+			}
+		}
+	}
 
 	return nil
 }
