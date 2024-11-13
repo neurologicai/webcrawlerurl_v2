@@ -1,6 +1,6 @@
 package googleshopping
 
-type Entry struct {
+type Item struct {
 	ID           Chardata    `xml:"id"`
 	Title        Chardata    `xml:"title"`
 	Description  Chardata    `xml:"description"`
@@ -19,8 +19,8 @@ type Entry struct {
 	Installment  Installment `xml:"installment"`
 }
 
-func NewEntry(id, title, description, summary, link, imageLink, price, salePrice, availability, condition, gender, size, ageGroup, color string, installment Installment) *Entry {
-	return &Entry{
+func NewItem(id, title, description, summary, link, imageLink, price, salePrice, availability, condition, gender, size, ageGroup, color string, installment Installment) *Item {
+	return &Item{
 		ID:           *NewChardata(id),
 		Title:        *NewChardata(title),
 		Description:  *NewChardata(description),
@@ -39,6 +39,6 @@ func NewEntry(id, title, description, summary, link, imageLink, price, salePrice
 	}
 }
 
-func (e *Entry) ToNormalise() *Entry {
-	return NewEntry(e.ID.Value, e.Title.Value, e.Description.Value, e.Summary.Value, e.Link.Value, e.ImageLink.Value, e.Price.Value, e.SalePrice.Value, e.Availability.Value, e.Condition.Value, e.Gender.Value, e.Size.Value, e.AgeGroup.Value, e.Color.Value, e.Installment)
+func (i *Item) ToNormalise() *Item {
+	return NewItem(i.ID.Value, i.Title.Value, i.Description.Value, i.Summary.Value, i.Link.Value, i.ImageLink.Value, i.Price.Value, i.SalePrice.Value, i.Availability.Value, i.Condition.Value, i.Gender.Value, i.Size.Value, i.AgeGroup.Value, i.Color.Value, i.Installment)
 }

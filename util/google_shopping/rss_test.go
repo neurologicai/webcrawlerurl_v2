@@ -7,10 +7,10 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFeed_AddEntry(t *testing.T) {
-	feed := googleshopping.NewFeed()
+func TestRSS_AddItem(t *testing.T) {
+	rss := googleshopping.NewRSS()
 
-	entry1 := *googleshopping.NewEntry(
+	item1 := *googleshopping.NewItem(
 		"1",
 		"Product 1",
 		"Description product 1",
@@ -28,7 +28,7 @@ func TestFeed_AddEntry(t *testing.T) {
 		*googleshopping.NewInstallment("5.00", "USD", "monthly", "12"),
 	)
 
-	entry2 := *googleshopping.NewEntry(
+	item2 := *googleshopping.NewItem(
 		"2",
 		"Product 2",
 		"Description product 2",
@@ -46,14 +46,14 @@ func TestFeed_AddEntry(t *testing.T) {
 		*googleshopping.NewInstallment("5.00", "USD", "monthly", "12"),
 	)
 
-	feed.AddEntry(entry1)
-	feed.AddEntry(entry2)
+	rss.AddItem(item1)
+	rss.AddItem(item2)
 
-	assert.Len(t, feed.Entry, 2)
-	assert.Equal(t, "1", feed.Entry[0].ID.Value)
-	assert.Equal(t, "2", feed.Entry[1].ID.Value)
+	assert.Len(t, rss.Item, 2)
+	assert.Equal(t, "1", rss.Item[0].ID.Value)
+	assert.Equal(t, "2", rss.Item[1].ID.Value)
 }
 
-func TestFeed_GetEntry(t *testing.T) {
-	t.Skip("TestFeed_GetEntry not implemented yet")
+func TestRSS_GetItem(t *testing.T) {
+	t.Skip("TestRSS_GetItem not implemented yet")
 }
