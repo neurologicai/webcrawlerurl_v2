@@ -5,7 +5,6 @@ import (
 	"sync"
 
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/load_page"
-	"github.com/gildemberg-santos/webcrawlerurl_v2/util/normalize"
 	"github.com/gildemberg-santos/webcrawlerurl_v2/util/timestamp"
 )
 
@@ -67,8 +66,6 @@ func (e *Ecommerce) crawler(url string) error {
 	if e.WithTimestamp.GetTime() >= float64(e.MaxTimeout-5) {
 		return nil
 	}
-
-	url, _ = normalize.NewNormalizeUrl(url).GetUrl()
 
 	if _, loaded := e.Visited.LoadOrStore(url, true); loaded {
 		// Se o URL já está presente no mapa, retorne sem fazer nada
