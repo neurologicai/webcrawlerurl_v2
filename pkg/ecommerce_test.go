@@ -39,9 +39,9 @@ func TestEcommerce_Call(t *testing.T) {
 `))
 
 	ecommerce := pkg.NewEcommerce([]string{
-		"https://www.teste.com/ah0116001-sandalia-basica-couro-preta-detalhe-laser/p",
-		"https://www.teste.com/ah0116002-sandalia-basica-couro-bege-detalhe-laser/p",
-	}, 10, true)
+		"https://www.teste.com/ah0116001-sandalia-basica-couro-preta-detalhe-laser/p?teste=123",
+		"https://www.teste.com/ah0116002-sandalia-basica-couro-bege-detalhe-laser/p?teste=123",
+	}, 10, true, true)
 	response := ecommerce.Call()
 
 	assert.NotNil(t, response)
